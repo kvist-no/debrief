@@ -2,7 +2,17 @@ use chatgpt::prelude::ChatGPT;
 use anyhow::Result;
 
 pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_requests: &Vec<octocrab::models::pulls::PullRequest>) -> Result<String> {
-    let mut prompt = "Please add emojis to all subsequent bullet points. You do not need to make the headings bullet points. Bold text with one set of asterisks will suffice. You will be provided with a set of pull requests that have been completed the last 24 hours. I want you to aggregate this into a bullet list highlighting the main changes. You can be a bit technical, but preferably not very. This will be posted to Slack verbatim so keep formatting light. Group into sensible categories. You do not need to include any other text such as 'Here are the changes'. Keep the summary to at most 10 lines.\n\n".to_string();
+    let mut prompt = "Please add emojis to all subsequent bullet points to make it a bit more appealing to read. \
+    Bold text with one set of asterisks will suffice. \
+    You will be provided with a set of pull requests that have been completed the last 24 hours. \
+    I want you to aggregate this into a bullet list highlighting the main changes. \
+    You can be a bit technical, but preferably not very. This will be posted to Slack verbatim so keep formatting light. \
+    Group into sensible categories such as bug fixes, new features, etc. \
+    You do not need to include any other text such as 'Here are the changes'. \
+    Keep the summary to at most 10 lines. \
+    Each bullet point should be a human readable sentence. \
+    Do not include these instructions in the output. \
+    Here is the content which you should summarise:".to_string();
 
     for pull_request in pull_requests {
         let title = pull_request.clone().title.clone().expect("Title should be set on the pull request");

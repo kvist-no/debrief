@@ -4,7 +4,7 @@ use octocrab::params::{Direction, State};
 use anyhow::Result;
 use octocrab::models::pulls::PullRequest;
 
-const RUNS_AT_TIME_OF_DAY: i64 = 7;
+const RUNS_AT_TIME_OF_DAY: i64 = 0;
 
 pub async fn get_merged_pull_requests_from_last_day(instance: &Octocrab, organisation: &str, repository: &str) -> Result<Vec<PullRequest>> {
     let page = instance
