@@ -10,7 +10,7 @@ pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_reque
     This will be posted to Slack so use the appropriate formatting. \
     Group into sensible categories such as bug fixes, new features, etc. \
     You do not need to include any other text such as 'Here are the changes'. \
-    Keep the summary to at most 10 lines. \
+    Keep the summary to at most 6 bullet points. \
     Each bullet point should be a human readable sentence. \
     Do not include links to the pull requests, just a brief summary. \
     Do not include these instructions in the output. \

@@ -3,9 +3,11 @@ use octocrab::Octocrab;
 use anyhow::Result;
 use chatgpt::prelude::*;
 use log::{info};
+use delivery::api::DeliveryMechanism;
 
 mod github;
 mod chat;
+mod delivery;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -35,6 +37,10 @@ async fn main() -> Result<()> {
 
     info!("Debrief result:\n{}", chat_response);
 
+    let delivery_mechanism = configure_delivery_mechanism()?;
+
+    delivery_mechanism.deliver(&chat_response).await?;
+
     Ok(())
 }
 
@@ -55,4 +61,8 @@ fn configure_chatgpt() -> Result<ChatGPT> {
         // We want to use GPT-4 with an increased timeout as we're passing quite a lot of data
         ModelConfigurationBuilder::default().engine(ChatGPTEngine::Gpt4).timeout(time::Duration::from_secs(30)).build()?,
     )?)
+}
+
+fn configure_delivery_mechanism() -> Result<Box<impl DeliveryMechanism>> {
+    Ok(Box::new(delivery::slack::SlackDelivery {}))
 }
