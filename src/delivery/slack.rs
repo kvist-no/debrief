@@ -21,6 +21,13 @@ impl DeliveryMechanism for SlackDelivery {
                 channel: slack_channel,
                 blocks: vec![
                     Block {
+                        r#type: "header".to_string(),
+                        text: Text {
+                            r#type: "plain_text".to_string(),
+                            text: "Your daily digest 📜".to_string(),
+                        }
+                    },
+                    Block {
                         r#type: "section".to_string(),
                         text: Text {
                             r#type: "mrkdwn".to_string(),

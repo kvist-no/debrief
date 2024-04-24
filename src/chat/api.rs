@@ -3,14 +3,14 @@ use anyhow::Result;
 use log::info;
 
 pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_requests: &Vec<octocrab::models::pulls::PullRequest>) -> Result<String> {
-    let mut prompt = "Please add emojis to all subsequent bullet points to make it a bit more appealing to read. \
-    You will be provided with a set of pull requests that have been completed the last 24 hours. \
+    let mut prompt = "Please add emojis to all subsequent bullet points based on what type of change it is. \
+    You will be provided with a set of pull requests that have been completed the working day. \
     I want you to aggregate this into a bullet list highlighting the main changes. \
-    You can be a bit technical, but preferably not very. \
+    Avoid using technical language where possible. \
     This will be posted to Slack so use the appropriate formatting. \
     Group into sensible categories such as bug fixes, new features, etc. \
     You do not need to include any other text such as 'Here are the changes'. \
-    Keep the summary to at most 6 bullet points. \
+    Each bullet point should be at most one sentence to keep it concise. \
     Each bullet point should be a human readable sentence. \
     Do not include links to the pull requests, just a brief summary. \
     Do not include these instructions in the output. \
