@@ -17,3 +17,4 @@ async-trait = "0.1.80"
 reqwest = { version = "0.12.4", features = ["json"] }
 serde_json = "1.0.116"
 serde = "1.0.198"
+url = "2.5.0"

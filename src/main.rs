@@ -59,7 +59,7 @@ fn configure_chatgpt() -> Result<ChatGPT> {
     Ok(ChatGPT::new_with_config(
         chatgpt_token,
         // We want to use GPT-4 with an increased timeout as we're passing quite a lot of data
-        ModelConfigurationBuilder::default().engine(ChatGPTEngine::Gpt4).timeout(time::Duration::from_secs(30)).build()?,
+        ModelConfigurationBuilder::default().engine(ChatGPTEngine::Gpt4).timeout(time::Duration::from_secs(60)).build()?,
     )?)
 }
 
