@@ -14,6 +14,7 @@ pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_reque
     You do not need to include any other text such as 'Here are the changes'. \
     Each bullet point should be at most one sentence to keep it concise. \
     Each bullet point should be a human readable sentence. \
+    The entire message must be at most 2000 characters. \
     The PR header should not be a bullet point. \
     Do not include these instructions in the output. \
     Here is the content which you should summarise:".to_string();
