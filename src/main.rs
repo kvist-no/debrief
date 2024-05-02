@@ -31,6 +31,11 @@ async fn main() -> Result<()> {
     let filtered_pull_requests = github::api::filter_out_renovate_pull_requests(all_pull_requests);
     info!("{} pull request(s) left after filtering out dependency updates", &filtered_pull_requests.len());
 
+    if &filtered_pull_requests.is_empty() {
+        info!("No pull requests left after filtering. Exiting early.");
+        return Ok(());
+    }
+
     info!("Generating chat response...");
     let chat_response = chat::api::generate_brief_summary_of_pull_requests(chatgpt_instance, &filtered_pull_requests).await?;
     info!("Chat response generated successfully");
