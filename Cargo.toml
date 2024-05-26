@@ -16,5 +16,5 @@ env_logger = "0.11.3"
 async-trait = "0.1.80"
 reqwest = { version = "0.12.4", features = ["json"] }
 serde_json = "1.0.116"
-serde = "1.0.198"
+serde = "1.0.200"
 url = "2.5.0"
