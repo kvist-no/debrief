@@ -6,7 +6,11 @@ use chrono::{Datelike, DateTime, Duration, Timelike, Utc, Weekday};
 use log::info;
 use octocrab::models::pulls::PullRequest;
 
-pub async fn get_merged_pull_requests_from_last_working_day(instance: &Octocrab, organisation: &str, repository: &str) -> Result<Vec<PullRequest>> {
+pub async fn get_merged_pull_requests_from_last_working_day(
+    instance: &Octocrab,
+    organisation: &str,
+    repository: &str,
+) -> Result<(DateTime<Utc>, Vec<PullRequest>)> {
     let beginning_datetime = get_beginning_of_last_working_day();
     info!("Getting all PRs merged after: {}", beginning_datetime.to_rfc2822());
 
@@ -33,7 +37,7 @@ pub async fn get_merged_pull_requests_from_last_working_day(instance: &Octocrab,
         }
     }
 
-    Ok(merged_pull_requests)
+    Ok((beginning_datetime, merged_pull_requests))
 }
 
 pub fn filter_out_renovate_pull_requests(pull_requests: Vec<PullRequest>) -> Vec<PullRequest> {

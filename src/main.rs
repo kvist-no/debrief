@@ -26,7 +26,8 @@ async fn main() -> Result<()> {
 
     info!("Github and ChatGPT instances created successfully");
 
-    let all_pull_requests = github::api::get_merged_pull_requests_from_last_working_day(&instance, repository_owner.as_str(), repository_name.as_str()).await?;
+    let (date_time, all_pull_requests) =
+        github::api::get_merged_pull_requests_from_last_working_day(&instance, repository_owner.as_str(), repository_name.as_str()).await?;
     info!("{} pull requests fetched successfully", &all_pull_requests.len());
     let filtered_pull_requests = github::api::filter_out_renovate_pull_requests(all_pull_requests);
     info!("{} pull request(s) left after filtering out dependency updates", &filtered_pull_requests.len());
@@ -44,7 +45,7 @@ async fn main() -> Result<()> {
 
     let delivery_mechanism = configure_delivery_mechanism()?;
 
-    delivery_mechanism.deliver(&chat_response).await?;
+    delivery_mechanism.deliver(&date_time, &chat_response).await?;
 
     Ok(())
 }

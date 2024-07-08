@@ -2,13 +2,15 @@ use log::info;
 use crate::delivery::api::DeliveryMechanism;
 use anyhow::Result;
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
 use serde::Serialize;
 
 pub struct SlackDelivery {}
 
 #[async_trait]
 impl DeliveryMechanism for SlackDelivery {
-    async fn deliver(&self, message: &str) -> Result<()> {
+    async fn deliver(&self, date_time: &DateTime<Utc>, message: &str) -> Result<
+        ()> {
         let slack_bot_token = std::env::var("SLACK_API_KEY").expect("Must provide slack API key");
         let slack_channel = std::env::var("SLACK_CHANNEL").expect("Must provide slack channel");
 
@@ -24,17 +26,20 @@ impl DeliveryMechanism for SlackDelivery {
                         r#type: "header".to_string(),
                         text: Text {
                             r#type: "plain_text".to_string(),
-                            text: "Your daily digest 📜".to_string(),
-                        }
+                            text: format!(
+                                "Digest for {}",
+                                date_time.format("%d/%m/%Y")
+                            ).to_string(),
+                        },
                     },
                     Block {
                         r#type: "section".to_string(),
                         text: Text {
                             r#type: "mrkdwn".to_string(),
                             text: message.to_string(),
-                        }
-                    }
-                ]
+                        },
+                    },
+                ],
             })
             .send()
             .await?;
