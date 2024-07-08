@@ -6,6 +6,20 @@ From this need, we created Debrief which is a simple Docker image you can run as
 
 ## How to use it
 
+This tool is built around the concept of delivery mechanisms which is just a 
+way to list up where you want the daily updates to be sent. Currently, we support Slack and a database delivery mechanism.
+
+You can enable the different ones with the following environment variables:
+
+```env
+DELIVERY_SLACK_ENABLED=true
+DELIVERY_DB_ENABLED=true
+```
+
+Not setting them, or setting them to false, disables them.
+
+---
+
 Run the Docker image with the following environment variables:
 
 ```env
@@ -23,4 +37,6 @@ RUST_LOG=info
 SLACK_API_KEY=
 # The Slack channel ID you want to deliver the message to
 SLACK_CHANNEL=
+# The database URL if you want to use the DB delivery mechanism
+DATABASE_URL=
 ```
