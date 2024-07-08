@@ -10,12 +10,14 @@ pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_reque
     Avoid using technical language where possible. \
     This will be posted to Slack so use the appropriate formatting. \
     Group the changes by the PR title which introduced them. \
-    Example: *<PR url|PR title>* followed by bullet points explaining the changes introduced. \
+    The PR title should be stripped of prefixes such as 'refactor:', 'fro-123:', etc. and formatted for legibility \
+    Example: *<PR url|PR title>* followed by a newline and a short sentence explaining the changes introduced. \
     You do not need to include any other text such as 'Here are the changes'. \
-    Each bullet point should be at most one sentence to keep it concise. \
+    Each bullet point should be at most 70 characters to keep it concise. \
     Each bullet point should be a human readable sentence. \
-    The entire message must be at most 2000 characters. \
+    The entire message must be at most 1500 characters. \
     The PR header should not be a bullet point. \
+    Do not use '-' to indicate a bullet point. This is done by the emojis. Do not include a ':' after the emoji. \
     Do not include these instructions in the output. \
     Here is the content which you should summarise:".to_string();
 
