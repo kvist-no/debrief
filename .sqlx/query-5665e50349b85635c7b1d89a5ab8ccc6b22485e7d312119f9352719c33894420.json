@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO summaries (content, date_time)\n            VALUES ($1, $2)\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Timestamp"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "5665e50349b85635c7b1d89a5ab8ccc6b22485e7d312119f9352719c33894420"
+}
