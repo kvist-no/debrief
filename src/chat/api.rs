@@ -23,7 +23,7 @@ pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_reque
     Here is the content which you should summarise:".to_string();
 
     for pull_request in pull_requests {
-        let title = pull_request.clone().title.clone().expect("Title should be set on the pull request");
+        let title = pull_request.clone().title.clone().unwrap_or("No title provided".to_string());
         let body = pull_request.clone().body.unwrap_or("No body provided".to_string());
         let url = pull_request.clone().html_url.unwrap_or(Url::parse("https://github.com").unwrap());
 

@@ -49,7 +49,10 @@ async fn main() -> Result<()> {
         info!("Delivering message using: {}", delivery_mechanism.get_name());
 
         if delivery_mechanism.is_enabled() {
-            delivery_mechanism.deliver(&date_time, &chat_response).await?;
+            match delivery_mechanism.deliver(&date_time, &chat_response).await {
+                Ok(_) => info!("Message delivered successfully by {}", delivery_mechanism.get_name()),
+                Err(e) => info!("Failed to deliver message: {:?}", e)
+            }
         } else {
             info!("Delivery mechanism {} is disabled", delivery_mechanism.get_name());
         }
