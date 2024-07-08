@@ -18,6 +18,7 @@ pub async fn generate_brief_summary_of_pull_requests(client: ChatGPT, pull_reque
     The entire message must be at most 1500 characters. \
     The PR header should not be a bullet point. \
     Do not use '-' to indicate a bullet point. This is done by the emojis. Do not include a ':' after the emoji. \
+    The emojis should be on the end of the line of the PR title. \
     Do not include these instructions in the output. \
     Here is the content which you should summarise:".to_string();
 

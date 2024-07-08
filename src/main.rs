@@ -1,6 +1,6 @@
 use std::{time};
 use octocrab::Octocrab;
-use anyhow::Result;
+use anyhow::{anyhow, Result};
 use chatgpt::prelude::*;
 use log::{info};
 use delivery::api::DeliveryMechanism;
@@ -15,14 +15,14 @@ async fn main() -> Result<()> {
     env_logger::init();
 
     // Initialise GitHub SDK
-    let instance = configure_octocrab();
+    let instance = configure_octocrab()?;
 
     // Initialise ChatGPT SDK
     let chatgpt_instance = configure_chatgpt()?;
 
     // Read repository details from environment
-    let repository_owner = read_env_var("REPOSITORY_OWNER");
-    let repository_name = read_env_var("REPOSITORY_NAME");
+    let repository_owner = read_env_var("REPOSITORY_OWNER")?;
+    let repository_name = read_env_var("REPOSITORY_NAME")?;
 
     info!("Github and ChatGPT instances created successfully");
 
@@ -43,25 +43,37 @@ async fn main() -> Result<()> {
 
     info!("Debrief result:\n{}", chat_response);
 
-    let delivery_mechanism = configure_delivery_mechanism()?;
+    let delivery_mechanisms = configure_delivery_mechanisms()?;
 
-    delivery_mechanism.deliver(&date_time, &chat_response).await?;
+    for delivery_mechanism in delivery_mechanisms {
+        info!("Delivering message using: {}", delivery_mechanism.get_name());
+
+        if delivery_mechanism.is_enabled() {
+            delivery_mechanism.deliver(&date_time, &chat_response).await?;
+        } else {
+            info!("Delivery mechanism {} is disabled", delivery_mechanism.get_name());
+        }
+    }
+
 
     Ok(())
 }
 
-fn read_env_var(var_name: &str) -> String {
+fn read_env_var(var_name: &str) -> Result<String> {
     let err = format!("Missing environment variable: {var_name}");
-    std::env::var(var_name).expect(&err)
+    match std::env::var(var_name) {
+        Ok(val) => Ok(val),
+        Err(_) => Err(anyhow!(err))
+    }
 }
 
-fn configure_octocrab() -> Octocrab {
-    let github_token = read_env_var("GITHUB_TOKEN");
-    Octocrab::builder().personal_token(github_token).build().expect("Failed to create Octocrab instance")
+fn configure_octocrab() -> Result<Octocrab> {
+    let github_token = read_env_var("GITHUB_TOKEN")?;
+    Ok(Octocrab::builder().personal_token(github_token).build()?)
 }
 
 fn configure_chatgpt() -> Result<ChatGPT> {
-    let chatgpt_token = read_env_var("OPENAI_TOKEN");
+    let chatgpt_token = read_env_var("OPENAI_TOKEN")?;
     Ok(ChatGPT::new_with_config(
         chatgpt_token,
         // We want to use GPT-4 with an increased timeout as we're passing quite a lot of data
@@ -69,6 +81,9 @@ fn configure_chatgpt() -> Result<ChatGPT> {
     )?)
 }
 
-fn configure_delivery_mechanism() -> Result<Box<impl DeliveryMechanism>> {
-    Ok(Box::new(delivery::slack::SlackDelivery {}))
+fn configure_delivery_mechanisms() -> Result<Vec<Box<dyn DeliveryMechanism>>> {
+    Ok(vec![
+        Box::new(delivery::slack::SlackDelivery {}),
+        Box::new(delivery::db::DbDelivery {}),
+    ])
 }

@@ -1,18 +1,24 @@
+use std::string::ToString;
 use log::info;
 use crate::delivery::api::DeliveryMechanism;
 use anyhow::Result;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
+use crate::read_env_var;
 
 pub struct SlackDelivery {}
 
 #[async_trait]
 impl DeliveryMechanism for SlackDelivery {
+    fn get_name(&self) -> String {
+        "slack".to_string()
+    }
+
     async fn deliver(&self, date_time: &DateTime<Utc>, message: &str) -> Result<
         ()> {
-        let slack_bot_token = std::env::var("SLACK_API_KEY").expect("Must provide slack API key");
-        let slack_channel = std::env::var("SLACK_CHANNEL").expect("Must provide slack channel");
+        let slack_bot_token = read_env_var("SLACK_API_KEY")?;
+        let slack_channel = read_env_var("SLACK_CHANNEL")?;
 
         let client = reqwest::Client::new();
 
