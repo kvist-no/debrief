@@ -1,6 +1,7 @@
 use anyhow::Result;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
+use crate::chat::provider::DebriefResponse;
 use crate::read_env_var;
 
 #[async_trait]
@@ -17,6 +18,6 @@ pub trait DeliveryMechanism {
     async fn deliver(
         &self,
         date_time: &DateTime<Utc>,
-        message: &str,
+        debrief: &Vec<DebriefResponse>,
     ) -> Result<()>;
 }
