@@ -25,8 +25,8 @@ Run the Docker image with the following environment variables:
 ```env
 # A GitHub PAT which has access to read the pull requests of the repository. A fine-grained will do.
 GITHUB_TOKEN=
-# An OpenAI token with access to GPT-4. We tried GPT-3.5-turbo, but it didn't work that well.
-OPENAI_TOKEN=
+# A Gemini API token with access to Pro 1.5.
+GEMINI_API_TOKEN=
 # The GitHub repository name
 REPOSITORY_NAME=
 # GitHub organization name or username in the case you want to use this for your own projects
