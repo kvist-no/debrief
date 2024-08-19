@@ -14,6 +14,7 @@ pub async fn generate_brief_summary_of_pull_requests(
     'fro-123:', etc. and rewritten in a human readable way. Capitalize the first letter of the title.
     Each description must be at most 70 characters.
     Each bullet point should be a human readable sentence. Rewrite it if necessary.
+    Each bullet point should be prefixed with a hyphen (-).
     The entire message must be at most 1500 characters, if the message is too long, skip the least important changes.
     The type of change should be a capitalized string such as 'Feature', 'Bug
      fix', 'Refactor', etc. Add an emoji to the beginning of the type of change.
