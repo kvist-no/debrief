@@ -67,7 +67,7 @@ impl DeliveryMechanism for SlackDelivery {
 impl DebriefResponse {
     pub fn to_slack_message(&self) -> String {
         format!(
-            "{} (<{}|PR>)",
+            "- {} (<{}|PR>)",
             self.description,
             self.url,
         )
