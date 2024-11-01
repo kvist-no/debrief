@@ -13,8 +13,8 @@ pub async fn generate_brief_summary_of_pull_requests(
     The PR title should be stripped of prefixes such as 'refactor:',
     'fro-123:', etc. and rewritten in a human readable way. Capitalize the first letter of the title.
     Each description must be at most 70 characters.
-    Each bullet point should be a human readable sentence. Rewrite it if necessary.
-    Each bullet point should be prefixed with a hyphen (-).
+    Each line should be a human readable sentence. Rewrite it if necessary.
+    Do not prefix the lines with hyphens.
     The entire message must be at most 1500 characters, if the message is too long, skip the least important changes.
     The type of change should be a capitalized string such as 'Feature', 'Bug
      fix', 'Refactor', etc. Add an emoji to the beginning of the type of change.

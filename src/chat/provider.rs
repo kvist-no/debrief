@@ -1,9 +1,7 @@
 use anyhow::{anyhow, Result};
-use google_generative_ai_rs::v1::api::Client;
-use google_generative_ai_rs::v1::gemini::{Content, Model, Part, Role};
-use google_generative_ai_rs::v1::gemini::request::{GenerationConfig, Request, SystemInstructionContent, SystemInstructionPart};
 use log::info;
 use serde::{Deserialize, Serialize};
+use crate::chat::gemini::{Gemini, GenerationConfig, Part, Request, RequestContent, SystemInstructionContent, SystemInstructionPart};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DebriefResponse {
@@ -21,15 +19,17 @@ pub trait ChatProvider {
 }
 
 pub struct GeminiChatProvider {
-    client: Client,
+    client: Gemini,
 }
 
 impl GeminiChatProvider {
     pub fn new(api_token: String) -> Self {
-        let client = Client::new_from_model(Model::Gemini1_5Pro, api_token);
+        let gemini = Gemini {
+            api_key: api_token,
+        };
 
         GeminiChatProvider {
-            client
+            client: gemini
         }
     }
 }
@@ -46,54 +46,36 @@ impl ChatProvider for GeminiChatProvider {
                     text: Some(system_instruction)
                 }]
             }),
-            tools: vec![],
             generation_config: Some(GenerationConfig {
-                temperature: None,
-                top_p: None,
-                top_k: None,
-                candidate_count: None,
-                max_output_tokens: None,
-                stop_sequences: None,
                 response_mime_type: Some("application/json".to_string()),
             }),
-            contents: vec![Content {
-                role: Role::User,
+            contents: vec![RequestContent {
+                role: "user".to_string(),
                 parts: vec![Part {
                     text: Some(message),
-                    inline_data: None,
-                    file_data: None,
-                    video_metadata: None,
                 }],
             }],
-            safety_settings: vec![]
         };
 
         let response = self.client.post(30, &request).await?;
 
-        match response.rest() {
-            Some(rest) => {
-                let first_candidate = rest.candidates.first();
+        let first_candidate = response.candidates.first();
 
-                match first_candidate.and_then(|candidate|  candidate.content.parts.first().and_then(|part| part.text.clone())) {
-                    Some(text) => {
-                        match serde_json::from_str::<Vec<DebriefResponse>>(text.as_str()) {
-                            Ok(debrief) => {
-                                info!("Successfully parsed response from Gemini: {:?}", debrief);
-                                Ok(debrief)
-                            }
-                            Err(e) => {
-                                Err(anyhow!("Error parsing response from Gemini: {:?}", e))
-                            }
-                        }
+        match first_candidate.and_then(|candidate| candidate.content.parts.first().and_then(|part| part.text.clone())) {
+            Some(text) => {
+                match serde_json::from_str::<Vec<DebriefResponse>>(text.as_str()) {
+                    Ok(debrief) => {
+                        info!("Successfully parsed response from Gemini: {:?}", debrief);
+                        Ok(debrief)
                     }
-                    None => {
-                        Err(anyhow!("No valid candidate, part or text parsed as response received from Gemini"))
+                    Err(e) => {
+                        Err(anyhow!("Error parsing response from Gemini: {:?}", e))
                     }
                 }
             }
             None => {
-                Err(anyhow!("Error generating candidates from Gemini"))
-            },
+                Err(anyhow!("No valid candidate, part or text parsed as response received from Gemini"))
+            }
         }
     }
 }
