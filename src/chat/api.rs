@@ -18,6 +18,8 @@ pub async fn generate_brief_summary_of_pull_requests(
     The entire message must be at most 1500 characters, if the message is too long, skip the least important changes.
     The type of change should be a capitalized string such as 'Feature', 'Bug
      fix', 'Refactor', etc. Add an emoji to the beginning of the type of change.
+    An example of a valid output is `[{ "description": "Add new feature", "url": "https://github.com", "type_of_change": "🚀Feature" }]`.
+    I.e. the output should be a JSON array of objects.
     Output the result using this JSON schema:
     { "type": "array"
     , "items": { "type": "object"

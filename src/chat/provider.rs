@@ -69,7 +69,7 @@ impl ChatProvider for GeminiChatProvider {
                         Ok(debrief)
                     }
                     Err(e) => {
-                        Err(anyhow!("Error parsing response from Gemini: {:?}", e))
+                        Err(anyhow!("Parsing response from Gemini failed: {:?}", e))
                     }
                 }
             }
