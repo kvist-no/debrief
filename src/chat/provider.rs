@@ -1,7 +1,10 @@
+use crate::chat::gemini::{
+    Gemini, GenerationConfig, Part, Request, RequestContent, SystemInstructionContent,
+    SystemInstructionPart,
+};
 use anyhow::{anyhow, Result};
 use log::info;
 use serde::{Deserialize, Serialize};
-use crate::chat::gemini::{Gemini, GenerationConfig, Part, Request, RequestContent, SystemInstructionContent, SystemInstructionPart};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct DebriefResponse {
@@ -24,13 +27,9 @@ pub struct GeminiChatProvider {
 
 impl GeminiChatProvider {
     pub fn new(api_token: String) -> Self {
-        let gemini = Gemini {
-            api_key: api_token,
-        };
+        let gemini = Gemini { api_key: api_token };
 
-        GeminiChatProvider {
-            client: gemini
-        }
+        GeminiChatProvider { client: gemini }
     }
 }
 
@@ -43,8 +42,8 @@ impl ChatProvider for GeminiChatProvider {
         let request = Request {
             system_instruction: Some(SystemInstructionContent {
                 parts: vec![SystemInstructionPart {
-                    text: Some(system_instruction)
-                }]
+                    text: Some(system_instruction),
+                }],
             }),
             generation_config: Some(GenerationConfig {
                 response_mime_type: Some("application/json".to_string()),
@@ -61,21 +60,23 @@ impl ChatProvider for GeminiChatProvider {
 
         let first_candidate = response.candidates.first();
 
-        match first_candidate.and_then(|candidate| candidate.content.parts.first().and_then(|part| part.text.clone())) {
-            Some(text) => {
-                match serde_json::from_str::<Vec<DebriefResponse>>(text.as_str()) {
-                    Ok(debrief) => {
-                        info!("Successfully parsed response from Gemini: {:?}", debrief);
-                        Ok(debrief)
-                    }
-                    Err(e) => {
-                        Err(anyhow!("Parsing response from Gemini failed: {:?}", e))
-                    }
+        match first_candidate.and_then(|candidate| {
+            candidate
+                .content
+                .parts
+                .first()
+                .and_then(|part| part.text.clone())
+        }) {
+            Some(text) => match serde_json::from_str::<Vec<DebriefResponse>>(text.as_str()) {
+                Ok(debrief) => {
+                    info!("Successfully parsed response from Gemini: {:?}", debrief);
+                    Ok(debrief)
                 }
-            }
-            None => {
-                Err(anyhow!("No valid candidate, part or text parsed as response received from Gemini"))
-            }
+                Err(e) => Err(anyhow!("Parsing response from Gemini failed: {:?}", e)),
+            },
+            None => Err(anyhow!(
+                "No valid candidate, part or text parsed as response received from Gemini"
+            )),
         }
     }
 }

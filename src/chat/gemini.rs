@@ -1,24 +1,32 @@
-use std::time::Duration;
 use anyhow::{anyhow, Result};
 use serde::{Deserialize, Serialize};
+use std::time::Duration;
 
 pub struct Gemini {
     pub api_key: String,
 }
 
 impl Gemini {
-    pub async fn post(&self, timeout: i32, request: &Request) ->
-    Result<Response> {
+    pub async fn post(&self, timeout: i32, request: &Request) -> Result<Response> {
         let client = reqwest::Client::new();
-        let response = client.post(format!("https://generativelanguage\
+        let response = client
+            .post(format!(
+                "https://generativelanguage\
         .googleapis.com/v1beta/models/gemini-1\
-        .5-flash:generateContent?key={}", self.api_key))
-            .json(request).timeout(Duration::from_secs(u64::try_from(timeout)
-            .expect("Please use a number in the intersection of u64 and i32")))
+        .5-flash:generateContent?key={}",
+                self.api_key
+            ))
+            .json(request)
+            .timeout(Duration::from_secs(u64::try_from(timeout).expect(
+                "Please use a number in the intersection of u64 and i32",
+            )))
             .send()
             .await?;
 
-        response.json::<Response>().await.map_err(|err| { anyhow!(err.to_string()) })
+        response
+            .json::<Response>()
+            .await
+            .map_err(|err| anyhow!(err.to_string()))
     }
 }
 

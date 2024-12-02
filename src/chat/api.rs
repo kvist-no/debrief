@@ -1,12 +1,11 @@
+use crate::chat::provider::{ChatProvider, DebriefResponse};
 use anyhow::Result;
 use log::info;
 use url::Url;
-use crate::chat::provider::{ChatProvider, DebriefResponse};
 
 pub async fn generate_brief_summary_of_pull_requests(
     client: impl ChatProvider,
-    pull_requests:
-    &Vec<octocrab::models::pulls::PullRequest>,
+    pull_requests: &Vec<octocrab::models::pulls::PullRequest>,
 ) -> Result<Vec<DebriefResponse>> {
     let prompt = r#"You will be provided with a set of pull requests that have been completed the working day.
     Avoid using technical language where possible.
@@ -34,14 +33,27 @@ pub async fn generate_brief_summary_of_pull_requests(
     let mut input = "".to_string();
 
     for pull_request in pull_requests {
-        let title = pull_request.clone().title.clone().unwrap_or("No title provided".to_string());
-        let body = pull_request.clone().body.unwrap_or("No body provided".to_string());
-        let url = pull_request.clone().html_url.unwrap_or(Url::parse("https://github.com").unwrap());
+        let title = pull_request
+            .clone()
+            .title
+            .clone()
+            .unwrap_or("No title provided".to_string());
+        let body = pull_request
+            .clone()
+            .body
+            .unwrap_or("No body provided".to_string());
+        let url = pull_request
+            .clone()
+            .html_url
+            .unwrap_or(Url::parse("https://github.com").unwrap());
 
         info!("Adding pull request to prompt: {}", &title);
 
-        input += format!("Pull request title: {title}\nPull request \
-        URL: {url}\nPull request body: {body}\n-----\n").as_str();
+        input += format!(
+            "Pull request title: {title}\nPull request \
+        URL: {url}\nPull request body: {body}\n-----\n"
+        )
+        .as_str();
     }
 
     let response = client.send_message(prompt, input).await?;

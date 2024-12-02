@@ -1,13 +1,13 @@
-use std::string::ToString;
-use log::info;
+use crate::chat::provider::DebriefResponse;
 use crate::delivery::api::DeliveryMechanism;
+use crate::read_env_var;
 use anyhow::Result;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
-use serde::Serialize;
-use crate::chat::provider::DebriefResponse;
-use crate::read_env_var;
 use itertools::Itertools;
+use log::info;
+use serde::Serialize;
+use std::string::ToString;
 
 pub struct SlackDelivery {}
 
@@ -20,8 +20,7 @@ impl DeliveryMechanism for SlackDelivery {
     async fn deliver(
         &self,
         date_time: &DateTime<Utc>,
-        debrief:
-        &Vec<DebriefResponse>,
+        debrief: &Vec<DebriefResponse>,
     ) -> Result<()> {
         let slack_bot_token = read_env_var("SLACK_API_KEY")?;
         let slack_channel = read_env_var("SLACK_CHANNEL")?;
@@ -30,7 +29,8 @@ impl DeliveryMechanism for SlackDelivery {
 
         let message = generate_slack_message(debrief);
 
-        let response = client.post("https://slack.com/api/chat.postMessage")
+        let response = client
+            .post("https://slack.com/api/chat.postMessage")
             .header("Content-Type", "application/json; charset=utf-8")
             .header("Authorization", format!("Bearer {}", slack_bot_token))
             .json(&ChatPostMessageBody {
@@ -40,17 +40,15 @@ impl DeliveryMechanism for SlackDelivery {
                         r#type: "header".to_string(),
                         text: Text {
                             r#type: "plain_text".to_string(),
-                            text: format!(
-                                "Digest for {}",
-                                date_time.format("%d/%m/%Y")
-                            ).to_string(),
+                            text: format!("Digest for {}", date_time.format("%d/%m/%Y"))
+                                .to_string(),
                         },
                     },
                     Block {
                         r#type: "section".to_string(),
                         text: Text {
                             r#type: "mrkdwn".to_string(),
-                            text: message
+                            text: message,
                         },
                     },
                 ],
@@ -66,24 +64,26 @@ impl DeliveryMechanism for SlackDelivery {
 
 impl DebriefResponse {
     pub fn to_slack_message(&self) -> String {
-        format!(
-            "• {} (<{}|PR>)",
-            self.description,
-            self.url,
-        )
+        format!("• {} (<{}|PR>)", self.description, self.url,)
     }
 }
 
 fn generate_slack_message(debriefs: &Vec<DebriefResponse>) -> String {
-    debriefs.into_iter().into_group_map_by(|debrief| {
-        debrief.type_of_change.clone()
-    }).into_iter().map(|(group, items)| {
-        format!(
-            "*{}*\n{}",
-            group,
-            items.into_iter().map(|item| item.to_slack_message()).join("\n")
-        )
-    }).join("\n")
+    debriefs
+        .into_iter()
+        .into_group_map_by(|debrief| debrief.type_of_change.clone())
+        .into_iter()
+        .map(|(group, items)| {
+            format!(
+                "*{}*\n{}",
+                group,
+                items
+                    .into_iter()
+                    .map(|item| item.to_slack_message())
+                    .join("\n")
+            )
+        })
+        .join("\n")
 }
 
 #[derive(Debug, Default, Serialize)]

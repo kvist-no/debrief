@@ -1,12 +1,12 @@
-use chrono::{DateTime, Utc};
+use crate::chat::provider::DebriefResponse;
 use crate::delivery::api::DeliveryMechanism;
-use anyhow::{Result};
+use crate::read_env_var;
+use anyhow::Result;
 use async_trait::async_trait;
+use chrono::{DateTime, Utc};
 use log::{info, warn};
 use serde_json::json;
 use sqlx::PgPool;
-use crate::chat::provider::DebriefResponse;
-use crate::read_env_var;
 
 pub struct DbDelivery {}
 
@@ -16,8 +16,11 @@ impl DeliveryMechanism for DbDelivery {
         "db".to_string()
     }
 
-    async fn deliver(&self, date_time: &DateTime<Utc>, message: &Vec<DebriefResponse>) ->
-                                                                    Result<()> {
+    async fn deliver(
+        &self,
+        date_time: &DateTime<Utc>,
+        message: &Vec<DebriefResponse>,
+    ) -> Result<()> {
         info!("Creating connection pool to postgres");
         let pool = PgPool::connect(&read_env_var("DATABASE_URL")?).await?;
 
