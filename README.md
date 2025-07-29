@@ -1,4 +1,4 @@
-# Debrief — AI assisted daily development updates
+# Debrief — AI generated daily development updates
 
 <img width="720" height="177" alt="example of use" src="https://github.com/user-attachments/assets/078a6a12-a123-4977-8fd9-260d23f4a1a2" />
 
