@@ -1,6 +1,8 @@
 # Debrief — AI assisted daily development updates
 
-Hello. At Kvist we faced the need for receiving daily updates on the development of our projects. We wanted to have a clear overview of what was done without having to go through commits and pull requests.
+<img width="720" height="177" alt="example of use" src="https://github.com/user-attachments/assets/078a6a12-a123-4977-8fd9-260d23f4a1a2" />
+
+At Kvist we faced the need for receiving daily updates on the development of our projects. We wanted to have a clear overview of what was done without having to go through commits and pull requests.
 
 From this need, we created Debrief which is a simple Docker image you can run as a cronjob in your Kubernetes cluster or wherever to receive a message in Slack every day containing the changes done the previous day (this accounts for weekends by sending updates on things done Friday through Sunday).
 
