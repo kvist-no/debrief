@@ -1,4 +1,4 @@
-use anyhow::{anyhow, Result};
+use anyhow::{Result, anyhow};
 use serde::{Deserialize, Serialize};
 use std::time::Duration;
 
@@ -12,7 +12,7 @@ impl Gemini {
         let response = client
             .post(format!(
                 "https://generativelanguage\
-        .googleapis.com/v1beta/models/gemini-1\
+        .googleapis.com/v1beta/models/gemini-2\
         .5-flash:generateContent?key={}",
                 self.api_key
             ))

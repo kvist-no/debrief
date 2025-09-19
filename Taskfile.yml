@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://json.schemastore.org/taskfile.json
+
+version: "3"
+
+tasks:
+  run:
+    dotenv: [".env"]
+    desc: Run the application with the environment variables from .env
+    cmd: cargo run
+
+  build:
+    desc: Build the application
+    cmd: cargo build
+    sources:
+      - Cargo.toml
+      - src/**/*.rs
+    generates:
+      - "target/**/*"
