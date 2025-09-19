@@ -8,7 +8,9 @@ From this need, we created Debrief which is a simple Docker image you can run as
 
 ## How to use it
 
-This tool is built around the concept of delivery mechanisms which is just a 
+This project uses Taskfile, and you can use `task run` and `task build` to run and build the project. It will read from `.env` so create that file and populate it with the desired values.
+
+This tool is built around the concept of delivery mechanisms which is just a
 way to list up where you want the daily updates to be sent. Currently, we support Slack and a database delivery mechanism.
 
 You can enable the different ones with the following environment variables:
