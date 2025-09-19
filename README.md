@@ -8,6 +8,12 @@ At Kvist we faced the need for receiving daily updates on the development of our
 
 From this need, we created Debrief which is a simple Docker image you can run as a cronjob in your Kubernetes cluster or wherever to receive a message in Slack every day containing the changes done the previous day (this accounts for weekends by sending updates on things done Friday through Sunday).
 
+## How to upgrade running version
+
+- Edit the version [here](https://github.com/kvist-no/infra/blob/995ef0db6d98b37a51c82a7ad0bfc22be2b4a2b8/kubernetes/internal-tools/debrief.yaml#L36)
+- Go to ArgoCD
+- Sync
+
 ## How to use it
 
 This project uses Taskfile, and you can use `task run` and `task build` to run and build the project. It will read from `.env` so create that file and populate it with the desired values.
