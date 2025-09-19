@@ -1,5 +1,7 @@
 # Debrief — AI generated daily development updates
 
+[![Rust](https://github.com/kvist-no/debrief/actions/workflows/ci.yaml/badge.svg)](https://github.com/kvist-no/debrief/actions/workflows/ci.yaml)
+
 <img width="720" height="177" alt="example of use" src="https://github.com/user-attachments/assets/078a6a12-a123-4977-8fd9-260d23f4a1a2" />
 
 At Kvist we faced the need for receiving daily updates on the development of our projects. We wanted to have a clear overview of what was done without having to go through commits and pull requests.
