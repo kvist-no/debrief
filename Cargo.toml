@@ -24,4 +24,3 @@ sqlx = { version = "0.8.6", features = [
   "chrono",
 ] }
 itertools = "0.14.0"
-
