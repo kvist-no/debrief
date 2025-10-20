@@ -37,7 +37,7 @@ Run the Docker image with the following environment variables:
 ```env
 # A GitHub PAT which has access to read the pull requests of the repository. A fine-grained will do.
 GITHUB_TOKEN=
-# A Gemini API token with access to Pro 1.5.
+# A Gemini API token with access to Pro 2.5.
 GEMINI_API_TOKEN=
 # The GitHub repository name
 REPOSITORY_NAME=
