@@ -1,4 +1,4 @@
-FROM rust:1.90 AS builder
+FROM rust:1.91 AS builder
 WORKDIR /usr/src/debrief
 COPY . .
 RUN cargo install --path .
